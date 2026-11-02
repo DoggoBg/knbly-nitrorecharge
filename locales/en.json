@@ -1,0 +1,17 @@
+{
+    "target_label": "Use NOS refill bench",
+    "no_empty_bottle": "You need an empty nitrous bottle.",
+    "no_full_bottle": "You need a nitrous bottle to empty.",
+    "minigame_failed": "You failed the bottle process.",
+    "minigame_failed_refill": "You failed the refill process.",
+    "minigame_failed_empty": "You failed to empty the bottle.",
+    "process_cancelled": "Process cancelled.",
+    "refill_done": "Nitrous bottle refilled.",
+    "refill_done_batch": "%s nitrous bottles refilled.",
+    "empty_done": "Nitrous bottle emptied.",
+    "empty_done_batch": "%s nitrous bottles emptied.",
+    "inventory_full": "Not enough inventory space.",
+    "missing_item": "You no longer have the required bottle.",
+    "wrong_job": "Only authorized mechanics can use this bench.",
+    "not_on_duty": "You must be on duty to use this bench."
+}

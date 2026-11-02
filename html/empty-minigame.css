@@ -1,0 +1,744 @@
+#empty-minigame-app {
+    --em-purple: #a855f7;
+    --em-electric: #bf00ff;
+    --em-pink: #ec4899;
+    --em-green: #22c55e;
+
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 50% 40%, rgba(236, 72, 153, 0.12), transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(30, 27, 75, 0.45), transparent 35%),
+        rgba(4, 6, 18, 0.92);
+    z-index: 100;
+    pointer-events: auto;
+}
+
+#empty-minigame-app.hidden {
+    display: none !important;
+}
+
+.em-shell {
+    position: relative;
+    padding: 18px;
+}
+
+.em-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    border: 2px solid rgba(236, 72, 153, 0.55);
+    box-shadow:
+        0 0 18px rgba(236, 72, 153, 0.45),
+        0 0 40px rgba(191, 0, 255, 0.2);
+    animation: emPulse 2.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.em-panel {
+    position: relative;
+    z-index: 2;
+    width: 920px;
+    padding: 24px 26px 28px;
+    border-radius: 18px;
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    background: linear-gradient(145deg, rgba(30, 27, 75, 0.95), rgba(8, 10, 28, 0.98));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+}
+
+.em-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.em-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: #f9a8d4;
+    text-shadow: 0 0 12px rgba(236, 72, 153, 0.45);
+}
+
+.em-step {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(192, 132, 252, 0.9);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.em-hint {
+    text-align: center;
+    color: #9aa3d4;
+    font-size: 20px;
+    margin-bottom: 18px;
+    min-height: 26px;
+}
+
+.em-stage {
+    position: relative;
+    height: 400px;
+    border-radius: 14px;
+    border: 1px solid rgba(236, 72, 153, 0.15);
+    background: linear-gradient(180deg, rgba(11, 16, 40, 0.65), rgba(6, 8, 20, 0.85));
+    overflow: visible;
+    display: block;
+}
+
+.em-panel.bottles-2,
+.em-panel.bottles-3 {
+    overflow: visible;
+}
+
+.em-single-layout {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px;
+}
+
+.em-single-layout .em-bottle-slot {
+    opacity: 1;
+}
+
+.em-slot-body {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: end;
+    column-gap: 28px;
+}
+
+.em-single-layout .em-slot-gauge-panel {
+    margin-top: 0;
+    width: 140px;
+}
+
+.em-multi-layout {
+    position: absolute;
+    inset: 8px 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.em-multi-layout.hidden,
+.em-single-layout.hidden {
+    display: none !important;
+}
+
+.em-bottle-wrap {
+    position: relative;
+    width: 172px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.em-valve-wrap {
+    position: relative;
+    top: auto;
+    left: auto;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+    margin-bottom: -6px;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.em-valve-wrap.removed {
+    opacity: 0;
+    transform: translateY(-24px) scale(0.85);
+    pointer-events: none;
+}
+
+.em-valve-label {
+    display: block;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #f0abfc;
+    text-align: center;
+    margin-bottom: 4px;
+    text-shadow: 0 0 10px rgba(236, 72, 153, 0.4);
+}
+
+.em-valve-knob {
+    width: 50px;
+    height: 24px;
+    cursor: grab;
+    touch-action: none;
+}
+
+.em-valve-knob.dragging {
+    cursor: grabbing;
+}
+
+.em-valve-shape {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #2a2a2a, #0a0a0a);
+    border: 2px solid #555;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform-origin: center center;
+}
+
+.em-valve-shape::before,
+.em-valve-shape::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 3px;
+}
+
+.em-valve-shape::before {
+    left: 8px;
+}
+
+.em-valve-shape::after {
+    right: 8px;
+}
+
+.em-valve-neck {
+    width: 30px;
+    height: 16px;
+    margin-top: -1px;
+    background: linear-gradient(90deg, #8a9099, #eef2f7 45%, #7a8088);
+    border: 2px solid #c8cdd4;
+    border-radius: 4px 4px 2px 2px;
+    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.35);
+}
+
+.em-valve-progress {
+    margin-top: 8px;
+    width: 90px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(40, 44, 52, 0.9);
+    overflow: hidden;
+}
+
+.em-valve-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--em-pink), var(--em-electric), #22d3ee);
+    box-shadow: 0 0 10px rgba(191, 0, 255, 0.45);
+    transition: width 0.1s ease;
+}
+
+.em-bottle.cap-on .em-neck {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    overflow: hidden;
+    border: none;
+}
+
+.em-bottle-slot:not(.ready) .em-valve-knob {
+    pointer-events: none;
+}
+
+.em-bottle {
+    position: relative;
+    width: 172px;
+    margin: 0 auto;
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+}
+
+.em-bottle.cap-on {
+    padding-top: 0;
+}
+
+.em-neck {
+    width: 42px;
+    height: 18px;
+    margin: 0 auto;
+    border-radius: 50% 50% 8px 8px;
+    background: linear-gradient(180deg, #555b63, #2a2e35);
+    border: 2px solid #8a9199;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.em-neck.open {
+    background: linear-gradient(180deg, #333, #111);
+    box-shadow:
+        inset 0 4px 8px rgba(0, 0, 0, 0.6),
+        0 -2px 12px rgba(191, 230, 255, 0.25);
+}
+
+.em-shell-body {
+    position: relative;
+    width: 100%;
+    height: 268px;
+    border-radius: 22px 22px 26px 26px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #0d47a1 0%, #1976d2 18%, #42a5f5 42%, #1565c0 62%, #0d47a1 100%);
+    border: 4px solid #d8dee8;
+    outline: 2px solid #8a9199;
+    box-shadow: inset -16px 0 28px rgba(0, 0, 0, 0.22), inset 16px 0 28px rgba(255, 255, 255, 0.08);
+}
+
+.em-liquid {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    height: 82%;
+    border-radius: 0 0 18px 18px;
+    background: linear-gradient(180deg, #0a2744 0%, #061525 55%, #020810 100%);
+    transition: height 0.15s linear;
+}
+
+.em-liquid.venting::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: linear-gradient(180deg, rgba(236, 72, 153, 0.5), transparent);
+    animation: emVentBubble 0.6s ease-in-out infinite;
+}
+
+.em-shine {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    width: 22px;
+    height: calc(100% - 28px);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent);
+    pointer-events: none;
+}
+
+.em-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 78%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.em-label-frame {
+    border: 3px solid #d5dbe3;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.em-label-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+    background: linear-gradient(180deg, #ff8f1f, #e65100);
+}
+
+.em-label-top span:last-child {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    font-style: italic;
+    color: #fff;
+}
+
+.em-label-mid {
+    padding: 5px;
+    text-align: center;
+    background: #fff;
+    color: #111;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.em-label-foot {
+    padding: 4px;
+    text-align: center;
+    background: linear-gradient(180deg, #ff8f1f, #e65100);
+    color: #fff;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.em-foot {
+    width: 108px;
+    height: 12px;
+    margin: -2px auto 0;
+    border-radius: 0 0 14px 14px;
+    background: linear-gradient(180deg, #7a8088, #3a4048);
+    border: 3px solid #c8cdd4;
+    border-top: none;
+}
+
+.em-vent-spray {
+    --vent-power: 1;
+    position: absolute;
+    left: 50%;
+    top: -12px;
+    width: 160px;
+    height: 180px;
+    transform: translateX(-50%);
+    pointer-events: none;
+    opacity: 0;
+    z-index: 6;
+    overflow: visible;
+}
+
+.em-vent-spray.active {
+    opacity: 1;
+}
+
+.em-spray-jet {
+    position: absolute;
+    left: 50%;
+    bottom: 18px;
+    width: 14px;
+    height: 0;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(220, 245, 255, 0.95), rgba(147, 197, 253, 0.35));
+    box-shadow: 0 0 18px rgba(191, 230, 255, 0.55);
+    filter: blur(1px);
+    opacity: calc(0.35 + var(--vent-power) * 0.65);
+}
+
+.em-vent-spray.active .em-spray-jet {
+    height: calc(70px + var(--vent-power) * 70px);
+    animation: emSprayJet 0.18s ease-in-out infinite alternate;
+}
+
+.em-spray-cloud {
+    position: absolute;
+    left: 50%;
+    bottom: 72px;
+    width: calc(40px + var(--vent-power) * 50px);
+    height: calc(40px + var(--vent-power) * 50px);
+    transform: translateX(-50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(224, 242, 254, 0.55), rgba(147, 197, 253, 0.08) 55%, transparent 72%);
+    filter: blur(8px);
+    opacity: calc(0.2 + var(--vent-power) * 0.55);
+}
+
+.em-vent-spray.active .em-spray-cloud {
+    animation: emSprayCloud 0.55s ease-in-out infinite alternate;
+}
+
+.em-mist {
+    position: absolute;
+    left: 50%;
+    bottom: 24px;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240, 249, 255, 0.85), rgba(186, 230, 253, 0.15));
+    filter: blur(3px);
+    opacity: 0;
+}
+
+.em-vent-spray.active .em-mist {
+    animation: emMistSpray 0.85s ease-out infinite;
+}
+
+.em-mist.m1 { animation-delay: 0s; --sx: -52px; --sy: -88px; }
+.em-mist.m2 { animation-delay: 0.08s; --sx: -28px; --sy: -110px; }
+.em-mist.m3 { animation-delay: 0.16s; --sx: 0px; --sy: -122px; }
+.em-mist.m4 { animation-delay: 0.1s; --sx: 28px; --sy: -110px; }
+.em-mist.m5 { animation-delay: 0.18s; --sx: 52px; --sy: -88px; }
+.em-mist.m6 { animation-delay: 0.22s; --sx: -68px; --sy: -62px; }
+.em-mist.m7 { animation-delay: 0.14s; --sx: 68px; --sy: -62px; }
+.em-mist.m8 { animation-delay: 0.26s; --sx: 0px; --sy: -138px; }
+
+.em-mist.m1, .em-mist.m2, .em-mist.m3, .em-mist.m4, .em-mist.m5 {
+    width: calc(10px + var(--vent-power) * 10px);
+    height: calc(10px + var(--vent-power) * 10px);
+}
+
+.em-mist.m6, .em-mist.m7, .em-mist.m8 {
+    width: calc(8px + var(--vent-power) * 8px);
+    height: calc(8px + var(--vent-power) * 8px);
+}
+
+.em-gauge-panel {
+    width: 160px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.em-gauge-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    color: #f9a8d4;
+    margin-bottom: 10px;
+}
+
+.em-gauge {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    margin: 0 auto;
+}
+
+.em-gauge-ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #cfd4db, #8a9199);
+    border: 3px solid #eef2f7;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.em-gauge-face {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background: conic-gradient(from 230deg, #1565c0 0deg 160deg, #e53935 160deg 310deg, #1565c0 310deg 360deg);
+}
+
+.em-gauge-face-inner {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #1976d2, #0d47a1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.em-gauge-needle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 46px;
+    margin-left: -2px;
+    margin-top: -44px;
+    background: linear-gradient(180deg, #fff, #ddd);
+    border-radius: 2px;
+    transform-origin: 50% 92%;
+    transform: rotate(60deg);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+    transition: transform 0.12s linear;
+}
+
+.em-gauge-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #eef2f7;
+    border: 2px solid #8a9199;
+    z-index: 2;
+}
+
+.em-gauge-value {
+    margin-top: 12px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fca5a5;
+    text-shadow: 0 0 12px rgba(236, 72, 153, 0.35);
+    transition: color 0.3s ease;
+}
+
+.em-gauge-value.empty {
+    color: #86efac;
+    text-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+@keyframes emPulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 1; }
+}
+
+@keyframes emVentBubble {
+    0%, 100% { opacity: 0.4; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-4px); }
+}
+
+@keyframes emSprayJet {
+    0% { transform: translateX(-50%) scaleX(0.85); opacity: 0.7; }
+    100% { transform: translateX(-50%) scaleX(1.15); opacity: 1; }
+}
+
+@keyframes emSprayCloud {
+    0% { transform: translateX(-50%) scale(0.92); opacity: 0.45; }
+    100% { transform: translateX(-50%) scale(1.08); opacity: 0.75; }
+}
+
+@keyframes emMistSpray {
+    0% {
+        opacity: 0;
+        transform: translate(0, 0) scale(0.4);
+    }
+    20% {
+        opacity: calc(0.35 + var(--vent-power) * 0.55);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--sx), var(--sy)) scale(calc(0.8 + var(--vent-power) * 0.9));
+    }
+}
+
+.em-panel.bottles-2 {
+    width: 980px;
+}
+
+.em-panel.bottles-3 {
+    width: 1120px;
+}
+
+.em-bottles-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+}
+
+.em-bottle-slot {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.38;
+    transition: opacity 0.25s ease;
+}
+
+.em-bottle-slot.ready,
+.em-bottle-slot.venting {
+    opacity: 1;
+}
+
+.em-bottle-slot.done {
+    opacity: 0.72;
+}
+
+.em-slot-label {
+    margin-bottom: 8px;
+}
+
+.em-slot-gauge-panel {
+    width: auto;
+    text-align: center;
+    margin-top: 0;
+}
+
+.em-slot-gauge-panel .em-gauge {
+    width: 96px;
+    height: 96px;
+}
+
+.em-slot-gauge-panel .em-gauge-value {
+    font-size: 16px;
+    margin-top: 6px;
+}
+
+.em-bottles-row.count-2 .em-bottle-wrap,
+.em-bottles-row.count-2 .em-bottle {
+    width: 148px;
+}
+
+.em-bottles-row.count-2 .em-shell-body {
+    height: 210px;
+}
+
+.em-bottles-row.count-2 .em-valve-knob {
+    width: 44px;
+    height: 22px;
+}
+
+.em-bottles-row.count-2 .em-valve-progress {
+    width: 78px;
+}
+
+.em-bottles-row.count-2 .em-slot-body {
+    column-gap: 14px;
+}
+
+.em-bottles-row.count-2 .em-slot-gauge-panel .em-gauge {
+    width: 88px;
+    height: 88px;
+}
+
+.em-bottles-row.count-3 .em-bottle-wrap,
+.em-bottles-row.count-3 .em-bottle {
+    width: 124px;
+}
+
+.em-bottles-row.count-3 .em-shell-body {
+    height: 172px;
+}
+
+.em-bottles-row.count-3 .em-valve-knob {
+    width: 38px;
+    height: 18px;
+}
+
+.em-bottles-row.count-3 .em-valve-neck {
+    width: 24px;
+    height: 12px;
+}
+
+.em-bottles-row.count-3 .em-valve-label {
+    font-size: 8px;
+    margin-bottom: 2px;
+}
+
+.em-bottles-row.count-3 .em-valve-progress {
+    width: 66px;
+    margin-top: 6px;
+}
+
+.em-bottles-row.count-3 .em-slot-body {
+    column-gap: 10px;
+}
+
+.em-bottles-row.count-3 .em-label-top span:last-child {
+    font-size: 16px;
+}
+
+.em-bottles-row.count-3 .em-slot-gauge-panel .em-gauge {
+    width: 72px;
+    height: 72px;
+}
+
+.em-bottles-row.count-3 .em-slot-gauge-panel .em-gauge-value {
+    font-size: 14px;
+}
+
+.em-bottles-row.count-3 .em-gauge-needle {
+    height: 32px;
+    margin-top: -30px;
+}

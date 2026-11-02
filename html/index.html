@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOS Refill</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="nos-cap.css">
+    <link rel="stylesheet" href="minigame.css">
+    <link rel="stylesheet" href="empty-minigame.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="process-cancel-hint" class="process-cancel-hint hidden">
+        Cancel the action by pressing <span class="cancel-key">"X"</span>
+    </div>
+
+    <div id="app" class="hidden">
+        <div class="glow-shell">
+            <div class="electric-ring ring-1"></div>
+            <div class="electric-ring ring-2"></div>
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="badge">NOS STATION</span>
+                    <button class="icon-btn" id="btn-close" title="Close">&times;</button>
+                </div>
+
+                <div class="bottle-wrap">
+                    <div class="bottle-glow"></div>
+                    <div class="bottle">
+                        <div class="bottle-valve">
+                            <div class="valve-knob"></div>
+                            <div class="valve-neck"></div>
+                        </div>
+
+                        <div class="bottle-body">
+                            <div class="bottle-shell">
+                                <div class="bottle-liquid"></div>
+                                <div class="bottle-shine"></div>
+                                <div class="bottle-gauge">
+                                    <div class="gauge-face"></div>
+                                </div>
+                            </div>
+
+                            <div class="nos-label">
+                                <div class="nos-label-frame">
+                                    <div class="nos-label-top">
+                                        <span class="nos-arrow">›</span>
+                                        <span class="nos-logo">NOS</span>
+                                    </div>
+                                    <div class="nos-label-mid">
+                                        <span>N<sub>2</sub>O</span>
+                                        <span class="nos-dot">•</span>
+                                        <span>10 LB</span>
+                                    </div>
+                                    <div class="nos-label-foot">Nitrous Oxide Systems</div>
+                                </div>
+                            </div>
+
+                            <div class="status-banner" id="status-banner">EMPTY</div>
+                        </div>
+
+                        <div class="bottle-foot"></div>
+                    </div>
+                </div>
+
+                <p class="subtitle" id="subtitle">Place your empty bottle on the bench to begin refilling.</p>
+
+                <div class="actions" id="menu-actions">
+                    <div class="batch-section">
+                        <p class="batch-title">Start Refilling</p>
+                        <div class="batch-buttons">
+                            <button class="btn btn-primary btn-batch" id="btn-refill-1" data-count="1">1/3</button>
+                            <button class="btn btn-primary btn-batch" id="btn-refill-2" data-count="2">2/3</button>
+                            <button class="btn btn-primary btn-batch" id="btn-refill-3" data-count="3">3/3</button>
+                        </div>
+                    </div>
+                    <div class="batch-section">
+                        <p class="batch-title batch-title-empty">Empty the Bottle</p>
+                        <div class="batch-buttons">
+                            <button class="btn btn-secondary btn-batch" id="btn-empty-1" data-count="1">1/3</button>
+                            <button class="btn btn-secondary btn-batch" id="btn-empty-2" data-count="2">2/3</button>
+                            <button class="btn btn-secondary btn-batch" id="btn-empty-3" data-count="3">3/3</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="actions hidden" id="result-actions">
+                    <button class="btn btn-success" id="btn-done">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="minigame-app" class="hidden">
+        <div class="mg-shell">
+            <div class="mg-ring"></div>
+            <div class="mg-panel" id="mg-panel">
+                <div class="mg-header">
+                    <span class="mg-title">NOS REFILL</span>
+                    <span class="mg-step" id="mg-step">Step 1 / 3</span>
+                </div>
+                <p class="mg-hint" id="mg-hint">Drag the pipe onto the top of the bottle</p>
+
+                <div class="mg-stage">
+                    <svg class="mg-hose-svg" id="mg-hose-svg" aria-hidden="true">
+                        <defs>
+                            <linearGradient id="mg-hose-outer" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#050505"/>
+                                <stop offset="30%" stop-color="#1a1a1a"/>
+                                <stop offset="55%" stop-color="#2b2b2b"/>
+                                <stop offset="100%" stop-color="#0a0a0a"/>
+                            </linearGradient>
+                            <linearGradient id="mg-hose-rubber" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stop-color="#242424"/>
+                                <stop offset="45%" stop-color="#121212"/>
+                                <stop offset="100%" stop-color="#080808"/>
+                            </linearGradient>
+                            <linearGradient id="mg-hose-purple-stripe" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" stop-color="#a855f7" stop-opacity="0"/>
+                                <stop offset="40%" stop-color="#bf00ff" stop-opacity="0.9"/>
+                                <stop offset="60%" stop-color="#ec4899" stop-opacity="0.75"/>
+                                <stop offset="100%" stop-color="#a855f7" stop-opacity="0"/>
+                            </linearGradient>
+                        </defs>
+                        <path class="mg-hose-shadow" id="mg-hose-shadow" fill="none" d=""></path>
+                        <path class="mg-hose-line" id="mg-hose-line" fill="none" d=""></path>
+                        <path class="mg-hose-sheen" id="mg-hose-sheen" fill="none" d=""></path>
+                        <path class="mg-hose-shine" id="mg-hose-shine" fill="none" d=""></path>
+                    </svg>
+
+                    <div class="mg-hose-anchor" id="mg-hose-anchor">
+                        <div class="mg-hose-coupler"></div>
+                        <div class="mg-hose-pump">
+                            <div class="mg-hose-pump-face"></div>
+                        </div>
+                        <div class="mg-hose-rib"></div>
+                    </div>
+
+                    <div class="mg-nozzle" id="mg-pipe">
+                        <div class="mg-nozzle-hose-join"></div>
+                        <div class="mg-nozzle-handle">
+                            <div class="mg-nozzle-grip"></div>
+                            <div class="mg-nozzle-trigger"></div>
+                            <div class="mg-nozzle-lever"></div>
+                        </div>
+                        <div class="mg-nozzle-body">
+                            <div class="mg-nozzle-badge"></div>
+                        </div>
+                        <div class="mg-nozzle-flex"></div>
+                        <div class="mg-nozzle-spout"></div>
+                    </div>
+
+                    <div id="mg-single-layout" class="mg-single-layout">
+                        <div class="mg-bottle-slot active" id="mg-bottle-slot">
+                            <div class="mg-slot-body">
+                                <div class="mg-bottle-wrap" id="mg-bottle-zone">
+                                    <div class="mg-bottle" id="mg-bottle-assembly">
+                                        <div class="mg-connect-target" id="mg-connect-target"></div>
+                                        <div class="mg-gas-stream" id="mg-gas-stream"></div>
+                                        <div class="mg-valve-wrap" id="mg-valve-wrap">
+                                            <div class="mg-valve-knob" id="mg-valve-knob">
+                                                <div class="mg-valve-knob-shape" id="mg-valve-shape"></div>
+                                            </div>
+                                            <div class="mg-valve-neck"></div>
+                                            <div class="mg-valve-progress">
+                                                <div class="mg-valve-progress-fill" id="mg-valve-progress-fill"></div>
+                                            </div>
+                                        </div>
+                                        <div class="mg-bottle-open-neck bottle-neck-slot"></div>
+                                        <div class="mg-bottle-shell">
+                                            <div class="mg-liquid" id="mg-liquid"></div>
+                                            <div class="mg-shine"></div>
+                                            <div class="mg-label">
+                                                <div class="mg-label-frame">
+                                                    <div class="mg-label-top"><span>›</span><span>NOS</span></div>
+                                                    <div class="mg-label-mid">N₂O • 10 LB</div>
+                                                    <div class="mg-label-foot">Nitrous Oxide Systems</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mg-foot"></div>
+                                    </div>
+                                </div>
+                                <div class="mg-gauge-panel" id="mg-gauge-panel">
+                                    <div class="mg-gauge-label">PRESSURE</div>
+                                    <div class="mg-gauge">
+                                        <div class="mg-gauge-ring">
+                                            <div class="mg-gauge-face"></div>
+                                            <div class="mg-gauge-face-inner"></div>
+                                            <div class="mg-gauge-needle" id="mg-gauge-needle"></div>
+                                            <div class="mg-gauge-center"></div>
+                                        </div>
+                                    </div>
+                                    <div class="mg-gauge-value" id="mg-gauge-value">0%</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="mg-multi-layout" class="mg-multi-layout hidden">
+                        <div class="mg-bottles-row" id="mg-bottles-row"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="empty-minigame-app" class="hidden">
+        <div class="em-shell">
+            <div class="em-ring"></div>
+            <div class="em-panel" id="em-panel">
+                <div class="em-header">
+                    <span class="em-title">NOS EMPTY</span>
+                    <span class="em-step" id="em-step">Step 1 / 2</span>
+                </div>
+                <p class="em-hint" id="em-hint">Turn the tap to remove the bottle top</p>
+
+                <div class="em-stage">
+                    <div id="em-single-layout" class="em-single-layout">
+                        <div class="em-bottle-slot ready">
+                            <div class="em-slot-body">
+                                <div class="em-bottle-wrap">
+                                    <div class="em-valve-wrap" id="em-valve-wrap">
+                                        <span class="em-valve-label">Turn to remove</span>
+                                        <div class="em-valve-knob" id="em-valve-knob">
+                                            <div class="em-valve-shape" id="em-valve-shape"></div>
+                                        </div>
+                                        <div class="em-valve-neck"></div>
+                                        <div class="em-valve-progress">
+                                            <div class="em-valve-progress-fill" id="em-valve-progress-fill"></div>
+                                        </div>
+                                    </div>
+                                    <div class="em-bottle cap-on" id="em-bottle-assembly">
+                                    <div class="em-vent-spray" id="em-vent-spray">
+                                        <div class="em-spray-jet"></div>
+                                        <div class="em-spray-cloud"></div>
+                                        <span class="em-mist m1"></span>
+                                        <span class="em-mist m2"></span>
+                                        <span class="em-mist m3"></span>
+                                        <span class="em-mist m4"></span>
+                                        <span class="em-mist m5"></span>
+                                        <span class="em-mist m6"></span>
+                                        <span class="em-mist m7"></span>
+                                        <span class="em-mist m8"></span>
+                                    </div>
+                                    <div class="em-neck bottle-neck-slot" id="em-neck"></div>
+                                    <div class="em-shell-body">
+                                        <div class="em-liquid" id="em-liquid"></div>
+                                        <div class="em-shine"></div>
+                                        <div class="em-label">
+                                            <div class="em-label-frame">
+                                                <div class="em-label-top"><span>›</span><span>NOS</span></div>
+                                                <div class="em-label-mid">N₂O • 10 LB</div>
+                                                <div class="em-label-foot">Nitrous Oxide Systems</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="em-foot"></div>
+                                </div>
+                            </div>
+                                <div class="em-slot-gauge-panel">
+                                <div class="em-gauge-label">PRESSURE</div>
+                                <div class="em-gauge">
+                                    <div class="em-gauge-ring">
+                                        <div class="em-gauge-face"></div>
+                                        <div class="em-gauge-face-inner"></div>
+                                        <div class="em-gauge-needle" id="em-gauge-needle"></div>
+                                        <div class="em-gauge-center"></div>
+                                    </div>
+                                </div>
+                                <div class="em-gauge-value" id="em-gauge-value">100%</div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="em-multi-layout" class="em-multi-layout hidden">
+                        <div class="em-bottles-row" id="em-bottles-row"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="minigame.js"></script>
+</body>
+</html>

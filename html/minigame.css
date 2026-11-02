@@ -1,0 +1,954 @@
+#minigame-app {
+    --mg-purple: #a855f7;
+    --mg-electric: #bf00ff;
+    --mg-dark-blue: #0b1028;
+    --mg-navy: #1e1b4b;
+    --mg-pink: #ec4899;
+    --mg-green: #22c55e;
+    --mg-blue: #1565c0;
+    --mg-liquid: #061525;
+
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 50% 40%, rgba(191, 0, 255, 0.14), transparent 45%),
+        radial-gradient(circle at 20% 80%, rgba(30, 27, 75, 0.45), transparent 35%),
+        rgba(4, 6, 18, 0.88);
+    z-index: 50;
+}
+
+#minigame-app.hidden {
+    display: none !important;
+}
+
+.mg-shell {
+    position: relative;
+    padding: 18px;
+}
+
+.mg-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    border: 2px solid rgba(191, 0, 255, 0.55);
+    box-shadow:
+        0 0 18px rgba(191, 0, 255, 0.55),
+        0 0 40px rgba(168, 85, 247, 0.25);
+    animation: mgPulse 2.2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.mg-panel {
+    position: relative;
+    z-index: 2;
+    width: 920px;
+    padding: 24px 26px 28px;
+    border-radius: 18px;
+    border: 1px solid rgba(168, 85, 247, 0.25);
+    background: linear-gradient(145deg, rgba(30, 27, 75, 0.95), rgba(8, 10, 28, 0.98));
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+    overflow: hidden;
+}
+
+.mg-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.mg-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    color: #c084fc;
+    text-shadow: 0 0 12px rgba(191, 0, 255, 0.45);
+}
+
+.mg-step {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: rgba(236, 72, 153, 0.85);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.mg-hint {
+    text-align: center;
+    color: #9aa3d4;
+    font-size: 20px;
+    margin-bottom: 18px;
+    min-height: 26px;
+}
+
+.mg-stage {
+    position: relative;
+    height: 400px;
+    border-radius: 14px;
+    border: 1px solid rgba(168, 85, 247, 0.15);
+    background: linear-gradient(180deg, rgba(11, 16, 40, 0.65), rgba(6, 8, 20, 0.85));
+    overflow: visible;
+}
+
+.mg-panel.bottles-2,
+.mg-panel.bottles-3 {
+    overflow: visible;
+}
+
+.mg-hose-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: visible;
+}
+
+.mg-hose-shadow {
+    stroke: rgba(0, 0, 0, 0.5);
+    stroke-width: 24;
+    stroke-linecap: round;
+    filter: blur(4px);
+}
+
+.mg-hose-line {
+    stroke: url(#mg-hose-rubber);
+    stroke-width: 17;
+    stroke-linecap: round;
+}
+
+.mg-hose-sheen {
+    stroke: rgba(255, 255, 255, 0.14);
+    stroke-width: 5;
+    stroke-linecap: round;
+}
+
+.mg-hose-shine {
+    stroke: url(#mg-hose-purple-stripe);
+    stroke-width: 5;
+    stroke-linecap: round;
+    filter: drop-shadow(0 0 6px rgba(191, 0, 255, 0.45));
+}
+
+.mg-hose-anchor {
+    position: absolute;
+    left: 0;
+    top: 58%;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+}
+
+.mg-hose-coupler {
+    width: 16px;
+    height: 28px;
+    border-radius: 4px 0 0 4px;
+    background: linear-gradient(180deg, #5a6068, #2a2e35);
+    border: 2px solid #8a9199;
+    border-right: none;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.12);
+}
+
+.mg-hose-pump {
+    width: 34px;
+    height: 44px;
+    border-radius: 6px;
+    background: linear-gradient(145deg, #4a5058 0%, #1a1d22 55%, #0d0f12 100%);
+    border: 2px solid #6a7078;
+    box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.45),
+        inset 0 2px 5px rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+.mg-hose-pump-face {
+    position: absolute;
+    inset: 6px 5px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.mg-hose-rib {
+    width: 26px;
+    height: 32px;
+    margin-left: -2px;
+    border-radius: 0 14px 14px 0;
+    background:
+        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.06), transparent 55%),
+        repeating-linear-gradient(
+            90deg,
+            #0f0f0f 0 3px,
+            #252525 3px 6px,
+            #121212 6px 9px
+        );
+    border: 2px solid #2a2a2a;
+    border-left: none;
+    box-shadow: inset -2px 0 6px rgba(0, 0, 0, 0.35);
+}
+
+.mg-nozzle {
+    position: absolute;
+    left: 64px;
+    top: 248px;
+    width: 158px;
+    height: 92px;
+    cursor: grab;
+    touch-action: none;
+    z-index: 8;
+    transform-origin: 18px 46px;
+    transition: opacity 0.2s ease;
+}
+
+.mg-nozzle.dragging {
+    cursor: grabbing;
+    z-index: 20;
+    filter: drop-shadow(0 0 16px rgba(191, 0, 255, 0.45));
+}
+
+.mg-nozzle.connected {
+    cursor: default;
+    pointer-events: none;
+}
+
+.mg-nozzle-hose-join {
+    position: absolute;
+    left: -2px;
+    top: 32px;
+    width: 26px;
+    height: 22px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #2a2a2a, #050505);
+    border: 2px solid #1a1a1a;
+    box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.06);
+}
+
+.mg-nozzle-handle {
+    position: absolute;
+    left: 20px;
+    top: 4px;
+    width: 42px;
+    height: 62px;
+    border-radius: 10px 10px 14px 14px;
+    background: linear-gradient(165deg, #3d4249 0%, #1a1d22 48%, #0a0b0d 100%);
+    border: 2px solid #5a6068;
+    box-shadow:
+        inset 0 3px 8px rgba(255, 255, 255, 0.08),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+}
+
+.mg-nozzle-grip {
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    width: 24px;
+    height: 28px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(0, 0, 0, 0.15) 0 2px,
+        rgba(255, 255, 255, 0.04) 2px 4px
+    );
+}
+
+.mg-nozzle-trigger {
+    position: absolute;
+    left: 8px;
+    bottom: 6px;
+    width: 24px;
+    height: 18px;
+    border-radius: 50% 50% 40% 40%;
+    background: radial-gradient(circle at 50% 30%, #2a2a2a, #000);
+    border: 2px solid #333;
+    box-shadow: inset 0 -2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.mg-nozzle-lever {
+    position: absolute;
+    right: 6px;
+    top: 18px;
+    width: 8px;
+    height: 26px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #cfd4db, #6b7078);
+    border: 1px solid #9aa0a8;
+}
+
+.mg-nozzle-body {
+    position: absolute;
+    left: 54px;
+    top: 2px;
+    width: 38px;
+    height: 48px;
+    border-radius: 12px 12px 8px 8px;
+    background: linear-gradient(165deg, #ff6b6b 0%, #e53935 42%, #b71c1c 78%, #8b0000 100%);
+    border: 2px solid rgba(255, 255, 255, 0.22);
+    box-shadow:
+        inset 0 4px 10px rgba(255, 255, 255, 0.2),
+        inset 0 -4px 10px rgba(0, 0, 0, 0.25),
+        0 3px 8px rgba(0, 0, 0, 0.35);
+}
+
+.mg-nozzle-badge {
+    position: absolute;
+    right: 5px;
+    top: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.mg-nozzle-flex {
+    position: absolute;
+    left: 88px;
+    top: 26px;
+    width: 22px;
+    height: 16px;
+    border-radius: 8px;
+    background:
+        radial-gradient(ellipse at 50% 50%, #8a9199 0%, #5a6068 45%, #3a4048 100%);
+    border: 1px solid #b8bec6;
+    box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.25);
+}
+
+.mg-nozzle-flex::before {
+    content: '';
+    position: absolute;
+    inset: 3px 4px;
+    border-radius: 6px;
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0 2px,
+        rgba(0, 0, 0, 0.12) 2px 3px
+    );
+}
+
+.mg-nozzle-spout {
+    position: absolute;
+    left: 106px;
+    top: 34px;
+    width: 44px;
+    height: 12px;
+    border-radius: 0 8px 8px 0;
+    background: linear-gradient(180deg, #f3f4f6 0%, #b8bec6 38%, #7a8088 72%, #5a6068 100%);
+    border: 2px solid #d5dbe3;
+    transform: rotate(6deg);
+    transform-origin: left center;
+    box-shadow:
+        inset 0 2px 4px rgba(255, 255, 255, 0.55),
+        0 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.mg-nozzle-spout::after {
+    content: '';
+    position: absolute;
+    right: -3px;
+    top: 2px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 40% 35%, #eef2f7, #9aa0a8);
+    border: 1px solid #cfd4db;
+}
+
+.mg-bottle-wrap,
+.mg-bottle-zone {
+    position: relative;
+    width: 172px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: visible;
+    padding-top: 54px;
+}
+
+.mg-single-layout {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 20px;
+}
+
+.mg-single-layout .mg-bottle-slot {
+    opacity: 1;
+}
+
+.mg-slot-body {
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: end;
+    column-gap: 28px;
+}
+
+.mg-single-layout .mg-gauge-panel,
+.mg-single-layout .mg-slot-gauge-panel {
+    position: static;
+    transform: none;
+    margin-top: 0;
+    width: 140px;
+}
+
+.mg-multi-layout {
+    position: absolute;
+    inset: 8px 16px 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+}
+
+.mg-multi-layout.hidden,
+.mg-single-layout.hidden {
+    display: none !important;
+}
+
+.mg-bottle-wrap.cap-step .mg-connect-target,
+.mg-bottle-wrap.cap-step .mg-gas-stream,
+.mg-bottle-zone.cap-step .mg-connect-target,
+.mg-bottle-zone.cap-step .mg-gas-stream,
+.mg-bottle.cap-on .mg-connect-target,
+.mg-bottle.cap-on .mg-gas-stream {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.mg-valve-wrap {
+    position: absolute;
+    top: -52px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    z-index: 15;
+    margin-bottom: 0;
+    pointer-events: auto;
+}
+
+.mg-valve-wrap.show {
+    display: flex;
+}
+
+.mg-valve-knob {
+    width: 46px;
+    height: 22px;
+    position: relative;
+    cursor: grab;
+    touch-action: none;
+}
+
+.mg-valve-knob.dragging {
+    cursor: grabbing;
+}
+
+.mg-valve-knob-shape {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #2a2a2a, #0a0a0a);
+    border: 2px solid #555;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    position: relative;
+    transform-origin: center center;
+}
+
+.mg-valve-knob-shape::before,
+.mg-valve-knob-shape::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    width: 10px;
+    height: 10px;
+    background: #111;
+    border-radius: 3px;
+}
+
+.mg-valve-knob-shape::before {
+    left: 8px;
+}
+
+.mg-valve-knob-shape::after {
+    right: 8px;
+}
+
+.mg-valve-neck {
+    width: 28px;
+    height: 16px;
+    background: linear-gradient(90deg, #8a9099, #eef2f7 45%, #7a8088);
+    border: 2px solid #c8cdd4;
+    border-radius: 4px 4px 2px 2px;
+}
+
+.mg-valve-progress {
+    margin-top: 6px;
+    width: 80px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(40, 44, 52, 0.9);
+    overflow: hidden;
+}
+
+.mg-valve-progress-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--mg-pink), var(--mg-electric), #22d3ee);
+    box-shadow: 0 0 10px rgba(191, 0, 255, 0.45);
+    transition: width 0.1s ease;
+}
+
+.mg-connect-target {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 54px;
+    height: 30px;
+    border: 2px dashed rgba(34, 197, 94, 0.6);
+    border-radius: 8px;
+    opacity: 0;
+    z-index: 6;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+.mg-connect-target.active {
+    opacity: 1;
+    animation: mgTargetPulse 1.2s ease-in-out infinite;
+}
+
+.mg-bottle {
+    position: relative;
+    width: 172px;
+    margin: 0 auto;
+    filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.55));
+}
+
+.mg-bottle.cap-on .mg-bottle-open-neck {
+    opacity: 0;
+    height: 0;
+    margin: 0;
+    overflow: hidden;
+    border: none;
+}
+
+.mg-bottle-open-neck {
+    width: 42px;
+    height: 16px;
+    margin: 0 auto;
+    border-radius: 6px 6px 2px 2px;
+    background: linear-gradient(180deg, #555b63, #2a2e35);
+    border: 2px solid #8a9199;
+}
+
+.mg-bottle-shell {
+    position: relative;
+    width: 100%;
+    height: 268px;
+    border-radius: 22px 22px 26px 26px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #0d47a1 0%, #1976d2 18%, #42a5f5 42%, #1565c0 62%, #0d47a1 100%);
+    border: 4px solid #d8dee8;
+    outline: 2px solid #8a9199;
+    box-shadow: inset -16px 0 28px rgba(0, 0, 0, 0.22), inset 16px 0 28px rgba(255, 255, 255, 0.08);
+}
+
+.mg-liquid {
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 4px;
+    height: 6%;
+    border-radius: 0 0 18px 18px;
+    background: linear-gradient(180deg, #0a2744 0%, #061525 55%, #020810 100%);
+    transition: height 0.15s linear;
+}
+
+.mg-liquid.filling::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(180deg, rgba(66, 165, 245, 0.45), transparent);
+    animation: mgBubble 0.8s ease-in-out infinite;
+}
+
+.mg-shine {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    width: 22px;
+    height: calc(100% - 28px);
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.42), transparent);
+    pointer-events: none;
+}
+
+.mg-label {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 78%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.mg-label-frame {
+    border: 3px solid #d5dbe3;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+.mg-label-top {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 6px;
+    background: linear-gradient(180deg, #ff8f1f, #e65100);
+}
+
+.mg-label-top span:last-child {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    font-style: italic;
+    color: #fff;
+}
+
+.mg-label-mid {
+    padding: 5px;
+    text-align: center;
+    background: #fff;
+    color: #111;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+}
+
+.mg-label-foot {
+    padding: 4px;
+    text-align: center;
+    background: linear-gradient(180deg, #ff8f1f, #e65100);
+    color: #fff;
+    font-size: 7px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.mg-foot {
+    width: 108px;
+    height: 12px;
+    margin: -2px auto 0;
+    border-radius: 0 0 14px 14px;
+    background: linear-gradient(180deg, #7a8088, #3a4048);
+    border: 3px solid #c8cdd4;
+    border-top: none;
+}
+
+.mg-gauge-panel {
+    width: 140px;
+    text-align: center;
+}
+
+.mg-gauge-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: #c084fc;
+    margin-bottom: 8px;
+}
+
+.mg-gauge {
+    position: relative;
+    width: 128px;
+    height: 128px;
+    margin: 0 auto;
+}
+
+.mg-gauge-ring {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #cfd4db, #8a9199);
+    border: 3px solid #eef2f7;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.mg-gauge-face {
+    position: absolute;
+    inset: 8px;
+    border-radius: 50%;
+    background:
+        conic-gradient(from 230deg, #1565c0 0deg 160deg, #e53935 160deg 310deg, #1565c0 310deg 360deg);
+}
+
+.mg-gauge-face-inner {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #1976d2, #0d47a1);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+}
+
+.mg-gauge-ticks {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+}
+
+.mg-gauge-needle {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 4px;
+    height: 38px;
+    margin-left: -2px;
+    margin-top: -36px;
+    background: linear-gradient(180deg, #fff, #ddd);
+    border-radius: 2px;
+    transform-origin: 50% 92%;
+    transform: rotate(-125deg);
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+    transition: transform 0.12s linear;
+}
+
+.mg-gauge-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: #eef2f7;
+    border: 2px solid #8a9199;
+    z-index: 2;
+}
+
+.mg-gauge-value {
+    margin-top: 10px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #86efac;
+    text-shadow: 0 0 12px rgba(34, 197, 94, 0.35);
+}
+
+.mg-gas-stream {
+    position: absolute;
+    left: 50%;
+    top: 6px;
+    width: 8px;
+    height: 0;
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgba(191, 0, 255, 0.85), rgba(66, 165, 245, 0.25));
+    border-radius: 4px;
+    opacity: 0;
+    filter: blur(0.5px);
+    box-shadow: 0 0 12px rgba(191, 0, 255, 0.45);
+    z-index: 4;
+}
+
+.mg-gas-stream.active {
+    opacity: 1;
+    height: 52px;
+    animation: mgStream 0.5s ease-in-out infinite alternate;
+}
+
+@keyframes mgPulse {
+    0%, 100% { opacity: 0.75; }
+    50% { opacity: 1; }
+}
+
+@keyframes mgTargetPulse {
+    0%, 100% { border-color: rgba(34, 197, 94, 0.35); }
+    50% { border-color: rgba(191, 0, 255, 0.75); }
+}
+
+@keyframes mgBubble {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(-3px); }
+}
+
+@keyframes mgStream {
+    0% { opacity: 0.55; width: 6px; }
+    100% { opacity: 1; width: 10px; }
+}
+
+.mg-panel.bottles-2 {
+    width: 980px;
+}
+
+.mg-panel.bottles-3 {
+    width: 1120px;
+}
+
+.mg-bottles-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    max-width: 100%;
+}
+
+.mg-bottle-slot {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.38;
+    transition: opacity 0.25s ease;
+}
+
+.mg-bottle-slot.active {
+    opacity: 1;
+}
+
+.mg-bottle-slot.done {
+    opacity: 0.65;
+}
+
+.mg-slot-label,
+.em-slot-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #c4b5fd;
+    margin-bottom: 8px;
+}
+
+.mg-slot-gauge-panel,
+.mg-gauge-panel {
+    width: auto;
+    text-align: center;
+    margin-top: 0;
+}
+
+.mg-slot-gauge-panel .mg-gauge,
+.mg-gauge-panel .mg-gauge {
+    width: 96px;
+    height: 96px;
+}
+
+.mg-slot-gauge-panel .mg-gauge-value,
+.mg-gauge-panel .mg-gauge-value {
+    font-size: 16px;
+    margin-top: 6px;
+}
+
+.mg-bottles-row.count-2 .mg-bottle-wrap,
+.mg-bottles-row.count-2 .mg-bottle-zone,
+.mg-bottles-row.count-2 .mg-bottle {
+    width: 148px;
+}
+
+.mg-bottles-row.count-2 .mg-bottle-wrap,
+.mg-bottles-row.count-2 .mg-bottle-zone {
+    padding-top: 50px;
+}
+
+.mg-bottles-row.count-2 .mg-bottle-shell {
+    height: 210px;
+}
+
+.mg-bottles-row.count-2 .mg-valve-knob {
+    width: 44px;
+    height: 22px;
+}
+
+.mg-bottles-row.count-2 .mg-valve-progress {
+    width: 78px;
+}
+
+.mg-bottles-row.count-2 .mg-slot-body {
+    column-gap: 14px;
+}
+
+.mg-bottles-row.count-2 .mg-bottle .mg-valve-wrap {
+    top: -48px;
+}
+
+.mg-bottles-row.count-2 .mg-slot-gauge-panel .mg-gauge {
+    width: 88px;
+    height: 88px;
+}
+
+.mg-bottles-row.count-2 .mg-label-top span:last-child {
+    font-size: 18px;
+}
+
+.mg-bottles-row.count-3 .mg-bottle-wrap,
+.mg-bottles-row.count-3 .mg-bottle-zone,
+.mg-bottles-row.count-3 .mg-bottle {
+    width: 124px;
+}
+
+.mg-bottles-row.count-3 .mg-bottle-wrap,
+.mg-bottles-row.count-3 .mg-bottle-zone {
+    padding-top: 46px;
+}
+
+.mg-bottles-row.count-3 .mg-bottle-shell {
+    height: 172px;
+}
+
+.mg-bottles-row.count-3 .mg-valve-knob {
+    width: 38px;
+    height: 18px;
+}
+
+.mg-bottles-row.count-3 .mg-valve-progress {
+    width: 66px;
+}
+
+.mg-bottles-row.count-3 .mg-slot-body {
+    column-gap: 10px;
+}
+
+.mg-bottles-row.count-3 .mg-bottle .mg-valve-wrap {
+    top: -44px;
+}
+
+.mg-bottles-row.count-3 .mg-label-top span:last-child {
+    font-size: 14px;
+}
+
+.mg-bottles-row.count-3 .mg-label-mid {
+    font-size: 7px;
+}
+
+.mg-bottles-row.count-3 .mg-slot-gauge-panel .mg-gauge {
+    width: 72px;
+    height: 72px;
+}
+
+.mg-bottles-row.count-3 .mg-slot-gauge-panel .mg-gauge-value {
+    font-size: 14px;
+}
+
+.mg-bottles-row.count-3 .mg-gauge-needle {
+    height: 32px;
+    margin-top: -30px;
+}
