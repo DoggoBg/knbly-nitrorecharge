@@ -21,8 +21,12 @@ You have options how much bottles to recharge:
 
 Ui for 1:
 <img width="759" height="481" alt="image" src="https://github.com/user-attachments/assets/3fd080a3-9759-42b0-b23a-137546c3e231" />
+
+
 Ui for 2:
 <img width="744" height="475" alt="image" src="https://github.com/user-attachments/assets/74c6f171-bf41-4de7-8e20-ce85b5c05331" />
+
+
 
 Ui for 3:
 <img width="813" height="473" alt="image" src="https://github.com/user-attachments/assets/06703f26-9204-4a3a-b474-e1c2ca8090a8" />
